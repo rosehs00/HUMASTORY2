@@ -1,0 +1,42 @@
+server:
+  port: 8081
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.kosta.humanstory.domain
+
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@192.168.0.27:1521:XE
+    username: kosta270
+    password: 1234
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 215MB
+      location: C://upload
+      enabled: true
+      file-size-threshold: 2KB
+
+  thymeleaf:
+    cache: false
+    check-template-location: true
+    prefix: classpath:/templates/
+    suffix: .html
+    view-names: thymeleaf/*
+
+logging:
+  level:
+    org.springframework: debug
+
+    
+
+
+
+

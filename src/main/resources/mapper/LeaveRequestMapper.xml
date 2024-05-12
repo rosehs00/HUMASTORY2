@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kosta.humanstory.mapper.LeaveRequestMapper">
+
+ <!--   <select id="getEmpList" resultType="com.kosta.humanstory.domain.LeaveRequestVO">
+        <![CDATA[
+        SELECT * FROM leaveRequest WHERE
+                                       CASE
+                                           WHEN #{empNum} IN ('101', '201', '301', '401', '501') THEN
+                                               empNum IN (
+                                                   SELECT empNum FROM employee WHERE deptNum = (
+                                                       SELECT deptNum FROM employee WHERE empNum = #{empNum}
+                                                   ) AND empNum != #{empNum}
+            )
+        ELSE
+            empNum = #{empNum}
+        END
+        ]]>
+    </select>-->
+
+
+    <select id="getEmpList" resultType="com.kosta.humanstory.domain.LeaveRequestVO">
+
+        SELECT * FROM leaveRequest WHERE
+                                       <if test="empNum == '101' or empNum == '201' or empNum == '301' or empNum == '401' or empNum == '501'">
+            empNum IN (
+            SELECT empNum FROM employee WHERE deptNum = (
+            SELECT deptNum FROM employee WHERE empNum = #{empNum}
+            ) AND empNum != #{empNum}
+            )
+                                       </if>
+                                       <if test="empNum != '101' and empNum != '201' and empNum != '301' and empNum != '401' and empNum != '501'">
+            empNum = #{empNum}
+                                       </if>
+
+    </select>
+
+
+
+    <select id="getList" resultType="com.kosta.humanstory.domain.LeaveRequestVO">
+        <![CDATA[
+		select * from leaveRequest where leavenum > 0
+		]]>  <!-- ![CDATA[ 내용 ]] 을 사용하면 <,>를 사용할 수 있다. -->
+    </select>
+
+
+    <insert id="insert">
+        <selectKey keyProperty="leaveNum" order="BEFORE" resultType="java.lang.Long">
+            select leavenum_seq.nextval from dual
+        </selectKey>
+        insert into leaveRequest
+        (leavenum,
+        empnum,
+        leavetype,
+        leavereason,
+        startdate,
+        enddate,
+        requestdate)
+        values
+        (#{leaveNum},
+        #{empNum},
+        #{leaveType},
+        #{leaveReason},
+        #{startDate},
+        #{endDate},
+        sysdate)
+    </insert>
+
+
+    <select id="getDetail" resultType="com.kosta.humanstory.domain.LeaveRequestVO">
+        select * from leaveRequest where leavenum =
+                                  #{leaveNum}
+    </select>
+
+    <update id="update">
+        update leaveRequest set
+                         leavetype = #{leaveType},
+                         leavereason = #{leaveReason},
+                         startdate = #{startDate},
+                         enddate = #{endDate},
+                         UPDATEDATE = sysdate
+        where leaveNum = #{leaveNum}
+    </update>
+
+    <delete id="delete">
+        delete leaveRequest where LEAVENUM = #{leaveNum}
+    </delete>
+
+
+
+</mapper>
+
+
+
